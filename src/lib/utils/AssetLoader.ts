@@ -15,8 +15,7 @@ export class AssetLoader {
   private fontRegistered = false;
 
   private constructor() {
-    // Asset paths berdasarkan struktur folder Anda
-    const assetsRoot = join(__dirname, "../../assets");
+    const assetsRoot = join(__dirname, "../../../src/assets");
 
     this.assetPaths = {
       profileBackground: join(assetsRoot, "profile_one/PROFILE-BACKGROUND.png"),
@@ -47,7 +46,6 @@ export class AssetLoader {
     return AssetLoader.instance;
   }
 
-  // Register font untuk canvas
   public registerFonts(): void {
     if (!this.fontRegistered) {
       try {
@@ -61,7 +59,6 @@ export class AssetLoader {
     }
   }
 
-  // Load image dengan caching
   public async loadImage(path: string): Promise<Image> {
     if (this.loadedImages.has(path)) {
       return this.loadedImages.get(path)!;
@@ -76,7 +73,6 @@ export class AssetLoader {
     }
   }
 
-  // Load image dari URL dengan fallback ke local
   public async loadImageFromUrl(
     url: string,
     fallbackPath?: string,
@@ -101,7 +97,7 @@ export class AssetLoader {
     return await this.loadImage(iconPath);
   }
 
-  // Map element names dari API ke internal names
+  // Map element names
   private mapElementName(element: string): ElementType {
     const mapping: Record<string, ElementType> = {
       Fire: "Fire",
@@ -122,17 +118,15 @@ export class AssetLoader {
     return mapping[element] || "Wind";
   }
 
-  // Get all asset paths
   public getAssetPaths(): AssetPaths {
     return { ...this.assetPaths };
   }
 
-  // Clear image cache
   public clearCache(): void {
     this.loadedImages.clear();
   }
 
-  // Helper: Resize image dengan aspect ratio preserved
+  // Helper: Resize image with optional aspect ratio preservation
   public async resizeImage(
     image: Image,
     width: number,

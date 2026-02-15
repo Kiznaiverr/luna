@@ -2,14 +2,12 @@ import { createCanvas, Canvas, Image } from "@napi-rs/canvas";
 import { CanvasContext } from "../types";
 
 export class CanvasUtils {
-  // Create canvas dengan size tertentu
   public static createCanvas(width: number, height: number): CanvasContext {
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
     return { canvas, ctx };
   }
 
-  // Draw text dengan alignment dan styling
   public static drawText(
     ctx: any,
     text: string,
@@ -46,7 +44,6 @@ export class CanvasUtils {
     ctx.restore();
   }
 
-  // Calculate text width
   public static getTextWidth(
     ctx: any,
     text: string,
@@ -60,7 +57,6 @@ export class CanvasUtils {
     return width;
   }
 
-  // Draw image dengan position dan optional resize
   public static drawImage(
     ctx: any,
     image: Image | Canvas,
@@ -76,7 +72,6 @@ export class CanvasUtils {
     }
   }
 
-  // Apply mask/clipping to canvas area
   public static applyMask(
     ctx: any,
     maskImage: Image,
@@ -92,7 +87,6 @@ export class CanvasUtils {
     ctx.restore();
   }
 
-  // Create gradient background
   public static createGradient(
     ctx: any,
     x1: number,
@@ -108,7 +102,6 @@ export class CanvasUtils {
     return gradient;
   }
 
-  // Draw rounded rectangle
   public static drawRoundedRect(
     ctx: any,
     x: number,
@@ -154,7 +147,7 @@ export class CanvasUtils {
     return baseCanvas;
   }
 
-  // Convert canvas to buffer dengan format dan quality
+  // Convert canvas to buffer
   public static toBuffer(
     canvas: Canvas,
     format: "png" | "jpeg" = "png",

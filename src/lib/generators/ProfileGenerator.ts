@@ -12,9 +12,8 @@ export class ProfileGenerator {
   private readonly CANVAS_WIDTH = 1200;
   private readonly CANVAS_HEIGHT = 657;
 
-  // Layout positions
+  /** Layout configuration for profile elements */
   private readonly LAYOUT = {
-    // Left panel (Player info)
     leftPanel: { x: 0, y: 0, width: 574, height: 657 },
     banner: { x: 35, y: 9, width: 528, height: 201 },
     avatar: { x: 218, y: 98, width: 163, height: 163 },
@@ -25,12 +24,10 @@ export class ProfileGenerator {
     worldLevel: { x: 522, y: 388 },
     signature: { x: 74, y: 450 },
 
-    // Right panel (Characters showcase)
     rightPanel: { x: 624, y: 0, width: 574, height: 644 },
     achievement: { x: 115, y: 170 },
     abyss: { x: 391, y: 170 },
 
-    // Character grid positions (8 slots)
     characterSlots: [
       { x: 3, y: 303 },
       { x: 142, y: 303 },
@@ -50,32 +47,26 @@ export class ProfileGenerator {
   }
 
   /**
-   * Generate profile image untuk player dengan UID tertentu
+   * Generate profile image for player with specified UID
+   * @param uid - Player UID (9-digit string)
+   * @param options - Generation options
+   * @returns Promise resolving to ProfileResult
    */
   public async generateProfile(
     uid: string,
     options: ProfileGeneratorOptions = {},
   ): Promise<ProfileResult> {
     try {
-      // Fetch player data
       const playerData = await this.enkaApi.getPlayerAssets(uid);
-
-      // Create main canvas
       const { canvas, ctx } = CanvasUtils.createCanvas(
         this.CANVAS_WIDTH,
         this.CANVAS_HEIGHT,
       );
 
-      // Load background assets
       await this.drawBackground(ctx);
-
-      // Draw left panel (player info)
       await this.drawLeftPanel(ctx, playerData, options.hideUID || false);
-
-      // Draw right panel (character showcase)
       await this.drawRightPanel(ctx, playerData);
 
-      // Generate result
       const result = await this.generateResult(
         canvas,
         uid,
@@ -89,9 +80,7 @@ export class ProfileGenerator {
     }
   }
 
-  /**
-   * Draw main background
-   */
+  /** Draw main background image */
   private async drawBackground(ctx: any): Promise<void> {
     const background = await this.assetLoader.loadImage(
       this.assetLoader.getAssetPaths().profileBackground,
@@ -106,9 +95,7 @@ export class ProfileGenerator {
     );
   }
 
-  /**
-   * Draw left panel dengan player information
-   */
+  /** Draw left panel with player information */
   private async drawLeftPanel(
     ctx: any,
     playerData: PlayerAssets,
@@ -116,14 +103,13 @@ export class ProfileGenerator {
   ): Promise<void> {
     const { playerInfo, profilePicture, nameCard } = playerData;
 
-    // Draw namecard banner
+    // Namecard banner
     try {
       const banner = await this.assetLoader.loadImageFromUrl(nameCard.url);
       const bannerFrame = await this.assetLoader.loadImage(
         this.assetLoader.getAssetPaths().bannerFrame,
       );
 
-      // Resize banner to fit
       CanvasUtils.drawImage(
         ctx,
         banner,
@@ -142,7 +128,7 @@ export class ProfileGenerator {
       console.warn("Failed to load namecard, using fallback");
     }
 
-    // Draw profile picture dengan avatar background dan mask
+    // Profile picture with background and mask
     try {
       const avatarBackground = await this.assetLoader.loadImage(
         this.assetLoader.getAssetPaths().avatar,
@@ -154,22 +140,22 @@ export class ProfileGenerator {
         profilePicture.url,
       );
 
-      // Create temporary canvas for compositing (simulate PIL Image.composite)
+      // Create temporary canvas for compositing
       const tempCanvas = createCanvas(
         this.LAYOUT.avatar.width,
         this.LAYOUT.avatar.height,
       );
       const tempCtx = tempCanvas.getContext("2d");
 
-      // Draw profile picture first (centered, smaller size)
+      // Center profile picture within avatar area
       const ppWidth = this.LAYOUT.profilePictureSize.width;
       const ppHeight = this.LAYOUT.profilePictureSize.height;
-      const ppX = (this.LAYOUT.avatar.width - ppWidth) / 2; // Center horizontally
-      const ppY = (this.LAYOUT.avatar.height - ppHeight) / 2; // Center vertically
+      const ppX = (this.LAYOUT.avatar.width - ppWidth) / 2;
+      const ppY = (this.LAYOUT.avatar.height - ppHeight) / 2;
 
       tempCtx.drawImage(avatarImage, ppX, ppY, ppWidth, ppHeight);
 
-      // Apply mask to profile picture (destination-in keeps only masked areas)
+      // Apply mask and background
       tempCtx.globalCompositeOperation = "destination-in";
       tempCtx.drawImage(
         avatarMask,
@@ -179,7 +165,6 @@ export class ProfileGenerator {
         this.LAYOUT.avatar.height,
       );
 
-      // Draw background behind the masked profile picture (destination-over)
       tempCtx.globalCompositeOperation = "destination-over";
       tempCtx.drawImage(
         avatarBackground,
@@ -189,10 +174,8 @@ export class ProfileGenerator {
         this.LAYOUT.avatar.height,
       );
 
-      // Reset composite operation
       tempCtx.globalCompositeOperation = "source-over";
 
-      // Draw the composited avatar to main canvas
       CanvasUtils.drawImage(
         ctx,
         tempCanvas,
@@ -201,7 +184,7 @@ export class ProfileGenerator {
       );
     } catch (error) {
       console.warn("Failed to load avatar assets, using fallback");
-      // Fallback: draw profile picture directly
+      // Fallback: direct draw
       try {
         const avatarImage = await this.assetLoader.loadImageFromUrl(
           profilePicture.url,
@@ -219,7 +202,6 @@ export class ProfileGenerator {
       }
     }
 
-    // Draw player info text
     const uidText = hideUID
       ? `UID: ${this.generateRandomUID()}`
       : `UID ${playerData.playerInfo.uid}`;
@@ -275,7 +257,7 @@ export class ProfileGenerator {
       },
     );
 
-    // Draw signature (dengan word wrap jika perlu)
+    // Player signature
     if (playerInfo.signature && playerInfo.signature.trim()) {
       CanvasUtils.drawText(
         ctx,
@@ -291,16 +273,13 @@ export class ProfileGenerator {
     }
   }
 
-  /**
-   * Draw right panel dengan character showcase
-   */
+  /** Draw right panel with character showcase */
   private async drawRightPanel(
     ctx: any,
     playerData: PlayerAssets,
   ): Promise<void> {
     const { playerInfo, showAvatars } = playerData;
 
-    // Draw titles dan stats
     CanvasUtils.drawText(ctx, "Main Page", 164 + this.LAYOUT.rightPanel.x, 53, {
       fontSize: 18,
       color: "#806244",
@@ -335,7 +314,6 @@ export class ProfileGenerator {
       },
     );
 
-    // Draw achievement count
     CanvasUtils.drawText(
       ctx,
       (playerInfo.finishAchievementNum || 0).toString(),
@@ -347,7 +325,6 @@ export class ProfileGenerator {
       },
     );
 
-    // Draw abyss progress
     const abyssText = `${playerInfo.towerFloorIndex || 0}-${playerInfo.towerLevelIndex || 0}`;
     CanvasUtils.drawText(
       ctx,
@@ -371,13 +348,10 @@ export class ProfileGenerator {
       },
     );
 
-    // Draw character showcase (max 8 characters)
     await this.drawCharacterShowcase(ctx, showAvatars.slice(0, 8));
   }
 
-  /**
-   * Draw character showcase grid
-   */
+  /** Draw character showcase grid */
   private async drawCharacterShowcase(
     ctx: any,
     characters: any[],
@@ -389,7 +363,6 @@ export class ProfileGenerator {
       const y = position.y;
 
       try {
-        // Load character assets
         const charImage = await this.assetLoader.loadImageFromUrl(
           character.url,
         );
@@ -405,16 +378,10 @@ export class ProfileGenerator {
                 this.assetLoader.getAssetPaths().charter4Star,
               );
 
-        // Draw background
         CanvasUtils.drawImage(ctx, charBackground, x, y);
-
-        // Draw quality background
         CanvasUtils.drawImage(ctx, qualityBg, x + 5, y);
-
-        // Draw character icon tanpa mask
         CanvasUtils.drawImage(ctx, charImage, x + 2, y + 5, 115, 115);
 
-        // Draw element icon
         if (character.element) {
           const elementIcon = await this.assetLoader.getElementIcon(
             character.element,
@@ -422,7 +389,6 @@ export class ProfileGenerator {
           CanvasUtils.drawImage(ctx, elementIcon, x + 7, y + 4, 30, 30);
         }
 
-        // Draw level text
         CanvasUtils.drawText(ctx, `Lv. ${character.level}`, x + 63, y + 134, {
           fontSize: 17,
           color: "#4E5367",
@@ -430,21 +396,16 @@ export class ProfileGenerator {
         });
       } catch (error) {
         console.warn(`Failed to load character ${character.avatarId}:`, error);
-        // Skip drawing if character assets fail to load
       }
     }
   }
 
-  /**
-   * Generate random UID untuk hide feature
-   */
+  /** Generate random UID for privacy feature */
   private generateRandomUID(): string {
     return Math.floor(100000000 + Math.random() * 900000000).toString();
   }
 
-  /**
-   * Generate final result berdasarkan options
-   */
+  /** Generate final result based on output options */
   private async generateResult(
     canvas: Canvas,
     uid: string,

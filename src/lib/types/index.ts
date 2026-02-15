@@ -5,15 +5,15 @@ export interface PlayerInfo {
   level: number;
   signature?: string; // Made optional since it can be undefined
   worldLevel: number;
-  finishAchievementNum?: number; // Made optional
-  towerFloorIndex?: number; // Made optional
-  towerLevelIndex?: number; // Made optional
+  finishAchievementNum?: number; 
+  towerFloorIndex?: number; 
+  towerLevelIndex?: number; 
   theaterActIndex?: number;
   theaterModeIndex?: number;
   theaterStarIndex?: number;
   isShowAvatarTalent?: boolean;
-  fetterCount?: number; // Made optional
-  towerStarIndex?: number; // Made optional
+  fetterCount?: number; 
+  towerStarIndex?: number; 
   stygianIndex?: number;
   stygianSeconds?: number;
   stygianId?: number;
@@ -37,22 +37,22 @@ export interface ShowAvatar {
   url: string;
   quality: number;
   level: number;
-  talentLevel?: number; // Made optional
-  element?: string; // Made optional
-  weaponType?: string; // Made optional
+  talentLevel?: number; 
+  element?: string;
+  weaponType?: string; 
 }
 
-// Input data dari lunassets
+// Input data from lunassets
 export interface PlayerAssets {
   playerInfo: PlayerInfo;
   profilePicture: ProfilePicture;
   nameCard: NameCard;
   showAvatars: ShowAvatar[];
-  ttl?: number; // Made optional
-  lastUpdated: string | Date; // Allow both string and Date
+  ttl?: number; 
+  lastUpdated: string | Date; // Allow both string and Date for flexibility
 }
 
-// Configuration untuk generator
+// Configuration options for profile generation
 export interface ProfileGeneratorOptions {
   hideUID?: boolean;
   customFontPath?: string;
