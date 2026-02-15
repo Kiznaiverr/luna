@@ -1,0 +1,52 @@
+{
+  "name": "luna",
+  "version": "1.0.0",
+  "description": "Generate Genshin Impact character profile images from UID using Node.js and TypeScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx src/examples/example.ts",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "genshin",
+    "impact",
+    "profile",
+    "generator",
+    "uid",
+    "canvas",
+    "image",
+    "enka",
+    "typescript"
+  ],
+  "author": "Kiznavierr",
+  "license": "MIT",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.90",
+    "lunassets": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "rimraf": "^5.0.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "src/assets/**/*",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kiznaiverr/luna.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kiznaiverr/luna/issues"
+  },
+  "homepage": "https://github.com/Kiznaiverr/luna#readme"
+}
