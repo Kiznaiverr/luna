@@ -1,12 +1,12 @@
 {
-  "name": "luna",
+  "name": "@kiznavierr/luna",
   "version": "1.0.0",
   "description": "Generate Genshin Impact character profile images from UID using Node.js and TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "tsx src/examples/example.ts",
+    "test": "tsx src/testing/test.ts",
     "clean": "rimraf dist",
     "prepublishOnly": "npm run clean && npm run build"
   },

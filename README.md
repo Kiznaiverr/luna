@@ -5,13 +5,13 @@ Generate Genshin Impact character profile images from UID using Node.js and Type
 ## Installation
 
 ```bash
-npm install luna
+npm install @kiznavierr/luna
 ```
 
 ## Usage
 
 ```typescript
-import { ProfileGenerator } from "luna";
+import { ProfileGenerator } from "@kiznavierr/luna";
 
 const generator = new ProfileGenerator();
 
