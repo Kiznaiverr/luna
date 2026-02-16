@@ -35,7 +35,7 @@ export class AssetLoader {
         Rock: join(assetsRoot, "icon/Element_Small_Geo.png"),
         Ice: join(assetsRoot, "icon/Element_Small_Cryo.png"),
       },
-      font: join(assetsRoot, "font/Genshin_Impact.ttf"),
+      font: join(assetsRoot, "font/Genshin_Impact_subsetted.ttf"),
     };
   }
 
